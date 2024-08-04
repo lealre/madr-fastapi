@@ -7,13 +7,14 @@ readme = "README.md"
 packages = [{include = "src"}]
 
 [tool.poetry.dependencies]
-python = "3.12.2"
+python = "3.12.*"
 fastapi = {extras = ["standard"], version = "^0.112.0"}
 sqlalchemy = "^2.0.31"
 alembic = "^1.13.2"
 email-validator = "^2.2.0"
 pydantic-settings = "^2.4.0"
 ruff = "^0.5.6"
+psycopg = {extras = ["binary"], version = "^3.2.1"}
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"

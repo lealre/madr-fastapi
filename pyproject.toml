@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "madr-fastapi"
+version = "0.1.0"
+description = ""
+authors = ["lealre <renaanvp@gmail.com>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "3.12.2"
+fastapi = {extras = ["standard"], version = "^0.112.0"}
+sqlalchemy = "^2.0.31"
+alembic = "^1.13.2"
+email-validator = "^2.2.0"
+pydantic-settings = "^2.4.0"
+ruff = "^0.5.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+taskipy = "^1.13.0"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+[tool.taskipy.tasks]
+lint = 'ruff check . && ruff check . --diff'
+format = 'ruff check . --fix && ruff format .'
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

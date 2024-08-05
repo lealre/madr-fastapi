@@ -60,7 +60,7 @@ def get_user_by_id(user_id: int, session: T_Session):
     if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='User not found.',
         )
 
     return user_db
@@ -73,7 +73,7 @@ def update_user(user_id: int, user: UserSchema, session: T_Session):
     if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='User not found.',
         )
 
     user_db.username = user.username
@@ -93,10 +93,10 @@ def delete_user(user_id: int, session: T_Session):
     if not user_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found',
+            detail='User not found.',
         )
 
     session.delete(user_db)
     session.commit()
 
-    return {'message': 'User Deleted'}
+    return {'message': 'User Deleted.'}

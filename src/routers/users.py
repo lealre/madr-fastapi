@@ -73,7 +73,7 @@ def update_user(
 ):
     if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions.'
         )
 
     hashed_password = get_password_hash(user.password)
@@ -96,7 +96,7 @@ def delete_user(
 ):
     if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions.'
         )
 
     session.delete(current_user)

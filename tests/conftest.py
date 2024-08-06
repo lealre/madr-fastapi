@@ -70,3 +70,14 @@ def user(session):
     user.clean_password = pwd  # Monkey Patch
 
     return user
+
+
+@pytest.fixture
+def other_user(session):
+    user = UserFactory()
+
+    session.add(user)
+    session.commit()
+    session.refresh(user)
+
+    return user

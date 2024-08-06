@@ -8,6 +8,7 @@ from sqlalchemy.pool import StaticPool
 from src.app import app
 from src.database import get_session
 from src.models import User, table_registry
+from src.security import get_password_hash
 
 
 class UserFactory(factory.Factory):
@@ -48,11 +49,24 @@ def client(session):
 
 
 @pytest.fixture
+def token(client, user):
+    response = client.post(
+        '/auth/token',
+        data={'username': user.email, 'password': user.clean_password},
+    )
+    return response.json()['access_token']
+
+
+@pytest.fixture
 def user(session):
-    user = UserFactory()
+    pwd = 'testest'
+
+    user = UserFactory(password=get_password_hash(pwd))
 
     session.add(user)
     session.commit()
     session.refresh(user)
+
+    user.clean_password = pwd  # Monkey Patch
 
     return user

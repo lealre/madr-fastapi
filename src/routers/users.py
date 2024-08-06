@@ -1,16 +1,12 @@
 from http import HTTPStatus
-from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
-from sqlalchemy.orm import Session
 
-from src.database import get_session
+from src.database import T_Session, get_session
 from src.models import User
 from src.schemas import Message, UserPublic, UserSchema, UsersList
-
-T_Session = Annotated[Session, Depends(get_session)]
-
+from src.security import get_current_user, get_password_hash
 
 router = APIRouter(prefix='/users', tags=['users'])
 
@@ -35,8 +31,10 @@ def create_user(user: UserSchema, session=Depends(get_session)):
                 detail='Email already exists.',
             )
 
+    hashed_password = get_password_hash(user.password)
+
     user_db = User(
-        username=user.username, email=user.email, password=user.password
+        username=user.username, email=user.email, password=hashed_password
     )
 
     session.add(user_db)
@@ -67,36 +65,41 @@ def get_user_by_id(user_id: int, session: T_Session):
 
 
 @router.put('/{user_id}', response_model=UserPublic)
-def update_user(user_id: int, user: UserSchema, session: T_Session):
-    user_db = session.scalar(select(User).where(User.id == user_id))
-
-    if not user_db:
+def update_user(
+    user_id: int,
+    user: UserSchema,
+    session: T_Session,
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
         )
 
-    user_db.username = user.username
-    user_db.email = user.email
-    user_db.password = user.password
+    hashed_password = get_password_hash(user.password)
+
+    current_user.username = user.username
+    current_user.email = user.email
+    current_user.password = hashed_password
 
     session.commit()
-    session.refresh(user_db)
+    session.refresh(current_user)
 
-    return user_db
+    return current_user
 
 
 @router.delete('/{user_id}', response_model=Message)
-def delete_user(user_id: int, session: T_Session):
-    user_db = session.scalar(select(User).where(User.id == user_id))
-
-    if not user_db:
+def delete_user(
+    user_id: int,
+    session: T_Session,
+    current_user: User = Depends(get_current_user),
+):
+    if current_user.id != user_id:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enough permissions'
         )
 
-    session.delete(user_db)
+    session.delete(current_user)
     session.commit()
 
     return {'message': 'User Deleted.'}

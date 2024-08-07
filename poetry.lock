@@ -403,6 +403,20 @@ uvicorn = {version = ">=0.15.0", extras = ["standard"]}
 standard = ["uvicorn[standard] (>=0.15.0)"]
 
 [[package]]
+name = "freezegun"
+version = "1.5.1"
+description = "Let your Python tests travel through time"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "freezegun-1.5.1-py3-none-any.whl", hash = "sha256:bf111d7138a8abe55ab48a71755673dbaa4ab87f4cff5634a4442dfec34c15f1"},
+    {file = "freezegun-1.5.1.tar.gz", hash = "sha256:b29dedfcda6d5e8e083ce71b2b542753ad48cfec44037b3fc79702e2980a89e9"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.7"
+
+[[package]]
 name = "greenlet"
 version = "3.0.3"
 description = "Lightweight in-process concurrent programming"
@@ -1718,4 +1732,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.*"
-content-hash = "b0aab12825d6d59a13f759c75b1c7c7d6a1d13fdb20caaf133a93e7a0628dc0e"
+content-hash = "cf2ca7bc2be03a3913214d3af2c5e07e4aa99c95115a64b5241be3f208e6c948"

@@ -20,3 +20,13 @@ class User:
     updated_at: Mapped[datetime] = mapped_column(
         init=False, onupdate=func.now(), nullable=True
     )
+
+
+@table_registry.mapped_as_dataclass
+class Books:
+    __tablename__ = 'books'
+
+    id: Mapped[int] = mapped_column(init=False, primary_key=True)
+    year: Mapped[int]
+    title: Mapped[int] = mapped_column(unique=True)
+    author_id: Mapped[int]

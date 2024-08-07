@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 
 class Message(BaseModel):
@@ -29,3 +29,17 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class BookSchema(BaseModel):
+    year: int = Field(gt=0)
+    title: str
+    author_id: int
+
+    @field_validator('title')
+    def validate_title(cls, v):
+        return v.strip().lower()
+
+
+class BookPublic(BookSchema):
+    id: int

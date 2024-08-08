@@ -43,3 +43,17 @@ class BookSchema(BaseModel):
 
 class BookPublic(BookSchema):
     id: int
+
+
+class BookUpdate(BaseModel):
+    year: int | None = Field(gt=0, default= None)
+    title: str | None = None
+    author_id: int | None = None
+
+    @field_validator('title')
+    def validate_title(cls, v):
+        return v.strip().lower()
+
+
+class BookList(BaseModel):
+    books: list[BookPublic]

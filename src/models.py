@@ -23,7 +23,7 @@ class User:
 
 
 @table_registry.mapped_as_dataclass
-class Books:
+class Book:
     __tablename__ = 'books'
 
     id: Mapped[int] = mapped_column(init=False, primary_key=True)

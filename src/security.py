@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from http import HTTPStatus
+from typing import Annotated
 
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
@@ -64,3 +65,6 @@ def get_current_user(session: T_Session, token: str = Depends(oauth2_scheme)):
         raise credentials_exception
 
     return user_db
+
+
+CurrentUser = Annotated[User, Depends(get_current_user)]

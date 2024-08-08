@@ -1,18 +1,18 @@
 from http import HTTPStatus
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
-from src.database import T_Session, get_session
+from src.database import T_Session
 from src.models import User
 from src.schemas import Message, UserPublic, UserSchema, UsersList
-from src.security import get_current_user, get_password_hash
+from src.security import CurrentUser, get_password_hash
 
 router = APIRouter(prefix='/users', tags=['users'])
 
 
 @router.post('/', response_model=UserPublic)
-def create_user(user: UserSchema, session=Depends(get_session)):
+def create_user(user: UserSchema, session: T_Session):
     user_db = session.scalar(
         select(User).where(
             (User.username == user.username) | (User.email == user.email)
@@ -69,7 +69,7 @@ def update_user(
     user_id: int,
     user: UserSchema,
     session: T_Session,
-    current_user: User = Depends(get_current_user),
+    current_user: CurrentUser,
 ):
     if current_user.id != user_id:
         raise HTTPException(
@@ -92,7 +92,7 @@ def update_user(
 def delete_user(
     user_id: int,
     session: T_Session,
-    current_user: User = Depends(get_current_user),
+    current_user: CurrentUser,
 ):
     if current_user.id != user_id:
         raise HTTPException(

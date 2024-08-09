@@ -1,4 +1,5 @@
 import factory
+import factory.fuzzy
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -7,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from src.app import app
 from src.database import get_session
-from src.models import User, table_registry
+from src.models import Book, User, table_registry
 from src.security import get_password_hash
 
 
@@ -18,6 +19,15 @@ class UserFactory(factory.Factory):
     username = factory.Sequence(lambda n: f'test_name_{n}')
     email = factory.LazyAttribute(lambda user: f'{user.username}@test.com')
     password = factory.LazyAttribute(lambda user: f'{user.username}_pass')
+
+
+class BookFactory(factory.Factory):
+    class Meta:
+        model = Book
+
+    year = factory.fuzzy.FuzzyInteger(1, 2000)
+    title = factory.Sequence(lambda n: f'book_{n}')
+    author_id = factory.fuzzy.FuzzyInteger(1, 100)
 
 
 @pytest.fixture
@@ -81,3 +91,14 @@ def other_user(session):
     session.refresh(user)
 
     return user
+
+
+@pytest.fixture
+def book(session):
+    book = BookFactory()
+
+    session.add(book)
+    session.commit()
+    session.refresh(book)
+
+    return book

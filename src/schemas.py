@@ -51,3 +51,19 @@ class BookUpdate(BaseModel):
 
 class BookList(BaseModel):
     books: list[BookPublic]
+
+
+class AuthorSchema(BaseModel):
+    name: str
+
+    @field_validator('name')
+    def validate_name(clas, v):
+        return v.strip().lower()
+
+
+class AuthorPublic(AuthorSchema):
+    id: int
+
+
+class AuthorList(BaseModel):
+    authors: list[AuthorPublic]

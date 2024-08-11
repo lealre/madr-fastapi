@@ -26,12 +26,12 @@ def add_author(
     
     author_db = Author(**author.model_dump())
 
+
     session.add(author_db)
     session.commit()
     session.refresh(author_db)
-
+    
     return author_db
-
 
 # @router.delete('/{auhtor_id}', response_model=Message)
 # def delete_author(author_id: int, session: T_Session, user: CurrentUser): ...
@@ -58,3 +58,4 @@ def get_author_by_id(author_id: int, session: T_Session):
 
 # @router.get('/', response_class=AuthorList)
 # def get_author_with_name_like(name: str, session: T_Session): ...
+

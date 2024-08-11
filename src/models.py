@@ -30,8 +30,9 @@ class Book:
     year: Mapped[int]
     title: Mapped[str] = mapped_column(unique=True)
     author_id: Mapped[int] = mapped_column(ForeignKey('authors.id'))
-    author_name: Mapped['Author'] = relationship(
-        init=False, back_populates='books'
+    author: Mapped['Author'] = relationship(
+        init=False,
+        back_populates='books',
     )
 
 
@@ -41,6 +42,8 @@ class Author:
 
     id: Mapped[int] = mapped_column(init=False, primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)
-    books: Mapped[list['Book']] = relationship(
-        init=False, back_populates='authors', cascade='all, delete-orphan'
+    books: Mapped[list[Book]] = relationship(
+        init=False,
+        back_populates='author',
+        cascade='all, delete-orphan',
     )

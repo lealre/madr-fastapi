@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 
-from src.routers import auth, books, users
+from src.routers import auth, books, users, author
 
 app = FastAPI()
 
 app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(books.router)
+app.include_router(author.router)
 
 
 @app.get('/')

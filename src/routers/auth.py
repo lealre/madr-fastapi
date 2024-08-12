@@ -6,7 +6,7 @@ from sqlalchemy import select
 
 from src.database import T_Session
 from src.models import User
-from src.schemas import Token
+from src.schemas.token import Token
 from src.security import create_access_token, get_current_user, verify_password
 
 router = APIRouter(prefix='/auth', tags=['auth'])

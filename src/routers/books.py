@@ -5,13 +5,14 @@ from sqlalchemy import select
 
 from src.database import T_Session
 from src.models import Book
-from src.schemas import BookList, BookPublic, BookSchema, BookUpdate, Message
+from src.schemas.base import Message
+from src.schemas.books import BookList, BookPublic, BookSchema, BookUpdate
 from src.security import CurrentUser
 
 router = APIRouter(prefix='/book', tags=['book'])
 
 
-@router.post('/', response_model=BookPublic)
+@router.post('/', response_model=BookPublic, status_code=HTTPStatus.CREATED)
 def add_book(book: BookSchema, session: T_Session, user: CurrentUser):
     db_book = session.scalar(select(Book).where(book.title == Book.title))
 

@@ -5,13 +5,14 @@ from sqlalchemy import select
 
 from src.database import T_Session
 from src.models import User
-from src.schemas import Message, UserPublic, UserSchema, UsersList
+from src.schemas.base import Message
+from src.schemas.users import UserPublic, UserSchema
 from src.security import CurrentUser, get_password_hash
 
 router = APIRouter(prefix='/users', tags=['users'])
 
 
-@router.post('/', response_model=UserPublic)
+@router.post('/', response_model=UserPublic, status_code=HTTPStatus.CREATED)
 def create_user(user: UserSchema, session: T_Session):
     user_db = session.scalar(
         select(User).where(
@@ -40,26 +41,6 @@ def create_user(user: UserSchema, session: T_Session):
     session.add(user_db)
     session.commit()
     session.refresh(user_db)
-
-    return user_db
-
-
-@router.get('/', response_model=UsersList)
-def get_all_users(session: T_Session, skip: int = 0, limit: int = 100):
-    users_db = session.scalars(select(User).offset(skip).limit(limit))
-
-    return {'users': users_db}
-
-
-@router.get('/{user_id}', response_model=UserPublic)
-def get_user_by_id(user_id: int, session: T_Session):
-    user_db = session.scalar(select(User).where(User.id == user_id))
-
-    if not user_db:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='User not found.',
-        )
 
     return user_db
 

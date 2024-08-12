@@ -6,7 +6,8 @@ from sqlalchemy import select
 
 from src.database import T_Session
 from src.models import Author
-from src.schemas import AuthorList, AuthorPublic, AuthorSchema, Message
+from src.schemas.authors import AuthorList, AuthorPublic, AuthorSchema
+from src.schemas.base import Message
 from src.security import CurrentUser
 
 router = APIRouter(prefix='/author', tags=['author'])

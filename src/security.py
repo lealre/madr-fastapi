@@ -43,7 +43,7 @@ def create_access_token(data: dict):
 def get_current_user(session: T_Session, token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=HTTPStatus.UNAUTHORIZED,
-        detail='Could not validate credentials',
+        detail='Could not validate credentials.',
         headers={'WWW-Authenticate': 'Bearer'},
     )
 

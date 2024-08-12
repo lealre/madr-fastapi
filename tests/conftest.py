@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from src.app import app
 from src.database import get_session
-from src.models import Book, User, table_registry
+from src.models import Author, Book, User, table_registry
 from src.security import get_password_hash
 
 
@@ -28,6 +28,13 @@ class BookFactory(factory.Factory):
     year = factory.fuzzy.FuzzyInteger(1, 2000)
     title = factory.Sequence(lambda n: f'book_{n}')
     author_id = factory.fuzzy.FuzzyInteger(1, 100)
+
+
+class AuthorFactory(factory.Factory):
+    class Meta:
+        model = Author
+
+    name = factory.Sequence(lambda n: f'author_{n}')
 
 
 @pytest.fixture
@@ -102,3 +109,14 @@ def book(session):
     session.refresh(book)
 
     return book
+
+
+@pytest.fixture
+def author(session):
+    author = AuthorFactory()
+
+    session.add(author)
+    session.commit()
+    session.refresh(author)
+
+    return author

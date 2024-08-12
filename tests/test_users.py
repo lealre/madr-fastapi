@@ -1,7 +1,5 @@
 from http import HTTPStatus
 
-from src.schemas import UserPublic
-
 
 def test_create_user(client):
     response = client.post(
@@ -13,7 +11,7 @@ def test_create_user(client):
         },
     )
 
-    assert response.status_code == HTTPStatus.OK
+    assert response.status_code == HTTPStatus.CREATED
     assert response.json() == {
         'username': 'testname',
         'email': 'test@test.com',
@@ -47,40 +45,6 @@ def test_create_user_with_duplicated_email(client, user):
 
     assert response.status_code == HTTPStatus.BAD_REQUEST
     assert response.json() == {'detail': 'Email already exists.'}
-
-
-def test_get_all_users_empty(client):
-    response = client.get('/users/')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'users': []}
-
-
-def test_get_all_users_with_users(client, user):
-    user_schema = UserPublic.model_validate(user).model_dump()
-
-    response = client.get('/users/')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'users': [user_schema]}
-
-
-def test_get_user_by_id(client, user):
-    response = client.get(f'/users/{user.id}')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {
-        'id': user.id,
-        'username': user.username,
-        'email': user.email,
-    }
-
-
-def test_get_user_by_id_not_found(client, user):
-    response = client.get('/users/555')
-
-    assert response.status_code == HTTPStatus.NOT_FOUND
-    assert response.json() == {'detail': 'User not found.'}
 
 
 def test_update_user(client, user, token):

@@ -26,7 +26,7 @@ def test_jwt_invalid_token(client):
     )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED
-    assert response.json() == {'detail': 'Could not validate credentials'}
+    assert response.json() == {'detail': 'Could not validate credentials.'}
 
 
 def test_token_with_no_user():
@@ -36,4 +36,4 @@ def test_token_with_no_user():
         get_current_user(session=T_Session, token=encoded_token)
 
     assert excinfo.value.status_code == HTTPStatus.UNAUTHORIZED
-    assert excinfo.value.detail == 'Could not validate credentials'
+    assert excinfo.value.detail == 'Could not validate credentials.'

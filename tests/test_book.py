@@ -10,7 +10,7 @@ def test_add_book(client, token):
         json={'year': 2024, 'title': 'book title', 'author_id': 1},
     )
 
-    assert response.status_code == HTTPStatus.OK
+    assert response.status_code == HTTPStatus.CREATED
     assert response.json() == {
         'id': 1,
         'year': 2024,
@@ -148,6 +148,15 @@ def test_list_books_filter_name_should_return_5_books(client, session):
     assert len(response.json()['books']) == expected_books
 
 
+def test_list_books_filter_name_should_return_empty(client, session):
+    session.bulk_save_objects(BookFactory.create_batch(5))
+    session.commit()
+
+    response = client.get('/book/?name=title')
+
+    assert response.json()['books'] == []
+
+
 def test_list_books_filter_year_should_return_5_books(client, session):
     expected_books = 5
     session.bulk_save_objects(BookFactory.create_batch(5, year=2000))
@@ -157,6 +166,15 @@ def test_list_books_filter_year_should_return_5_books(client, session):
     response = client.get('/book/?year=2000')
 
     assert len(response.json()['books']) == expected_books
+
+
+def test_list_books_filter_year_should_return_empty(client, session):
+    session.bulk_save_objects(BookFactory.create_batch(5, year=2000))
+    session.commit()
+
+    response = client.get('/book/?year=2024')
+
+    assert response.json()['books'] == []
 
 
 def test_list_books_filter_combined_should_return_5_books(session, client):

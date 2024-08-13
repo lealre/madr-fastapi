@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy import select
 
 from src.database import T_Session
-from src.models import Book
+from src.models import Author, Book
 from src.schemas.base import Message
 from src.schemas.books import BookList, BookPublic, BookSchema, BookUpdate
 from src.security import CurrentUser
@@ -20,6 +20,14 @@ def add_book(book: BookSchema, session: T_Session, user: CurrentUser):
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=f'{db_book.title} already in MADR.',
+        )
+
+    author = session.scalar(select(Author).where(Author.id == book.author_id))
+
+    if not author:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=f'Author with ID {book.author_id} not found.',
         )
 
     db_book = Book(**book.model_dump())

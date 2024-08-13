@@ -4,7 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from sqlalchemy.pool import StaticPool
+from testcontainers.postgres import PostgresContainer
 
 from src.app import app
 from src.database import get_session
@@ -27,7 +27,7 @@ class BookFactory(factory.Factory):
 
     year = factory.fuzzy.FuzzyInteger(1, 2000)
     title = factory.Sequence(lambda n: f'book_{n}')
-    author_id = factory.fuzzy.FuzzyInteger(1, 100)
+    author_id = 1
 
 
 class AuthorFactory(factory.Factory):
@@ -37,18 +37,22 @@ class AuthorFactory(factory.Factory):
     name = factory.Sequence(lambda n: f'author_{n}')
 
 
-@pytest.fixture
-def session():
-    engine = create_engine(
-        'sqlite:///:memory:',
-        connect_args={'check_same_thread': False},
-        poolclass=StaticPool,
-    )
+@pytest.fixture(scope='session')
+def engine():
+    with PostgresContainer('postgres:16', driver='psycopg') as postgres:
+        _engine = create_engine(postgres.get_connection_url())
 
+        with _engine.begin():
+            yield _engine
+
+
+@pytest.fixture
+def session(engine):
     table_registry.metadata.create_all(engine)
 
     with Session(engine) as session:
         yield session
+        session.rollback()
 
     table_registry.metadata.drop_all(engine)
 
@@ -101,17 +105,6 @@ def other_user(session):
 
 
 @pytest.fixture
-def book(session):
-    book = BookFactory()
-
-    session.add(book)
-    session.commit()
-    session.refresh(book)
-
-    return book
-
-
-@pytest.fixture
 def author(session):
     author = AuthorFactory()
 
@@ -120,3 +113,14 @@ def author(session):
     session.refresh(author)
 
     return author
+
+
+@pytest.fixture
+def book(session, author):
+    book = BookFactory()
+
+    session.add(book)
+    session.commit()
+    session.refresh(book)
+
+    return book

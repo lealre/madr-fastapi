@@ -3,7 +3,7 @@ from http import HTTPStatus
 from tests.conftest import BookFactory
 
 
-def test_add_book(client, token):
+def test_add_book(client, token, author):
     response = client.post(
         '/book',
         headers={'Authorization': f'Bearer {token}'},
@@ -30,6 +30,24 @@ def test_add_book_already_exists(client, token, book):
     assert response.json() == {'detail': f'{book.title} already in MADR.'}
 
 
+def test_add_book_author_id_not_found(client, token):
+    book = BookFactory()
+    response = client.post(
+        '/book',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'year': book.year,
+            'title': book.title,
+            'author_id': book.author_id,
+        },
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    assert response.json() == {
+        'detail': f'Author with ID {book.author_id} not found.'
+    }
+
+
 def test_add_book_not_authenticated(client):
     response = client.post(
         '/book',
@@ -40,17 +58,16 @@ def test_add_book_not_authenticated(client):
     assert response.json() == {'detail': 'Not authenticated'}
 
 
-def test_book_title_sanitization_schema(client, token):
+def test_book_title_sanitization_schema(client, token, author):
     expected_title = 'a title to correct'
     response = client.post(
         '/book',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'id': 1,
             'year': 2024,
             'title': ' A   TitLE  to correct     ',
             'author_id': 1,
-        }
+        },
     )
 
     assert response.json()['title'] == expected_title
@@ -81,7 +98,7 @@ def test_delete_book_not_authenticated(client, book):
     assert response.json() == {'detail': 'Not authenticated'}
 
 
-def test_patch_book(session, client, token):
+def test_patch_book(session, client, token, author):
     input_year = 2000
     book = BookFactory(year=input_year)
 
@@ -150,7 +167,7 @@ def test_list_books_empty(client):
     assert response.json()['books'] == []
 
 
-def test_list_books_filter_name_should_return_5_books(client, session):
+def test_list_books_filter_name_should_return_5_books(client, session, author):
     expected_books = 5
     session.bulk_save_objects(BookFactory.create_batch(5))
     books_with_title = BookFactory.create_batch(5, title='title')
@@ -164,7 +181,7 @@ def test_list_books_filter_name_should_return_5_books(client, session):
     assert len(response.json()['books']) == expected_books
 
 
-def test_list_books_filter_name_should_return_empty(client, session):
+def test_list_books_filter_name_should_return_empty(client, session, author):
     session.bulk_save_objects(BookFactory.create_batch(5))
     session.commit()
 
@@ -173,7 +190,7 @@ def test_list_books_filter_name_should_return_empty(client, session):
     assert response.json()['books'] == []
 
 
-def test_list_books_filter_year_should_return_5_books(client, session):
+def test_list_books_filter_year_should_return_5_books(client, session, author):
     expected_books = 5
     session.bulk_save_objects(BookFactory.create_batch(5, year=2000))
     session.bulk_save_objects(BookFactory.create_batch(5, year=2024))
@@ -184,7 +201,7 @@ def test_list_books_filter_year_should_return_5_books(client, session):
     assert len(response.json()['books']) == expected_books
 
 
-def test_list_books_filter_year_should_return_empty(client, session):
+def test_list_books_filter_year_should_return_empty(client, session, author):
     session.bulk_save_objects(BookFactory.create_batch(5, year=2000))
     session.commit()
 
@@ -193,7 +210,9 @@ def test_list_books_filter_year_should_return_empty(client, session):
     assert response.json()['books'] == []
 
 
-def test_list_books_filter_combined_should_return_5_books(session, client):
+def test_list_books_filter_combined_should_return_5_books(
+    session, client, author
+):
     expected_books = 5
     books = BookFactory.create_batch(7, year=2000)
     books[-1].title = 'title'
@@ -206,7 +225,7 @@ def test_list_books_filter_combined_should_return_5_books(session, client):
     assert len(response.json()['books']) == expected_books
 
 
-def test_list_books_pagination_should_return_20_books(session, client):
+def test_list_books_pagination_should_return_20_books(session, client, author):
     expected_books = 20
     session.bulk_save_objects(BookFactory.create_batch(25, year=2000))
     session.commit()

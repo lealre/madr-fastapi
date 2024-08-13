@@ -25,6 +25,7 @@ taskipy = "^1.13.0"
 pytest-cov = "^5.0.0"
 factory-boy = "^3.3.0"
 freezegun = "^1.5.1"
+testcontainers = "^4.7.2"
 
 [tool.pytest.ini_options]
 pythonpath = "."

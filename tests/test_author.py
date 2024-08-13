@@ -35,6 +35,17 @@ def test_add_author_not_authenticated(client):
     assert response.json() == {'detail': 'Not authenticated'}
 
 
+def test_author_name_sanitization_schema(client, token):
+    expected_name = 'a name to correct'
+    response = client.post(
+        '/author',
+        headers={'Authorization': f'Bearer {token}'},
+        json={'name': ' A   NAmE to correct     '},
+    )
+
+    assert response.json()['name'] == expected_name
+
+
 def test_delete_author(client, token, author):
     response = client.delete(
         f'/author/{author.id}',

@@ -40,6 +40,22 @@ def test_add_book_not_authenticated(client):
     assert response.json() == {'detail': 'Not authenticated'}
 
 
+def test_book_title_sanitization_schema(client, token):
+    expected_title = 'a title to correct'
+    response = client.post(
+        '/book',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'id': 1,
+            'year': 2024,
+            'title': ' A   TitLE  to correct     ',
+            'author_id': 1,
+        }
+    )
+
+    assert response.json()['title'] == expected_title
+
+
 def test_delete_book(client, token, book):
     response = client.delete(
         f'/book/{book.id}', headers={'Authorization': f'Bearer {token}'}

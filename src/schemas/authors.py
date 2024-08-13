@@ -1,3 +1,5 @@
+import re
+
 from pydantic import BaseModel, field_validator
 
 
@@ -6,7 +8,8 @@ class AuthorSchema(BaseModel):
 
     @field_validator('name')
     def validate_name(cls, v):
-        return v.strip().lower()
+        v = v.lower().strip()
+        return re.sub(r'\s+', ' ', v)
 
 
 class AuthorPublic(AuthorSchema):

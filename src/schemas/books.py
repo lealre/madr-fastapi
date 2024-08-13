@@ -1,3 +1,5 @@
+import re
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -7,8 +9,9 @@ class BookSchema(BaseModel):
     author_id: int
 
     @field_validator('title')
-    def validate_title(cls, v):
-        return v.strip().lower()
+    def validate_name(cls, v):
+        v = v.lower().strip()
+        return re.sub(r'\s+', ' ', v)
 
 
 class BookPublic(BookSchema):

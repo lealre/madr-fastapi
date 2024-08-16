@@ -1,0 +1,30 @@
+name: ci
+on: [push, pull_request]
+
+jobs:
+  ci-pipeline:
+    runs-on: ubuntu-latest
+    
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SECRET_KEY: ${{ secrets.SECRET_KEY }}
+      ALGORITHM: ${{ secrets.ALGORITHM }}
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${{ secrets.ACCESS_TOKEN_EXPIRE_MINUTES }}
+
+    steps:
+        - name: Copy the files from the repository.
+          uses: actions/checkout@v3
+
+        - name: Install Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: '3.12'
+  
+        - name: Install Poetry
+          run: pipx install poetry
+  
+        - name: Install dependencies
+          run: poetry install
+  
+        - name: Execute tests
+          run: poetry run task test

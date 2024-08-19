@@ -6,7 +6,7 @@ It's called MADR (Mader), a Portuguese acronym for "Meu Acervo Digital de Romanc
 
 It is built using the FastAPI framework, with [Pydantic](https://docs.pydantic.dev/latest/) responsible for data validation. It uses a PostgreSQL database, and [SQLAlchemy](https://www.sqlalchemy.org/) is used for ORM, with [Alembic](https://alembic.sqlalchemy.org/en/latest/) handling database migrations during the development process.
 
-It uses JWT authorization and authentication for the operations of creating, updating, and deleting records.
+JWT (JSON Web Token) is used as a Bearer token for authorization and authentication in API operations, such as creating, updating, and deleting records. The JWT is included in the Authorization header of HTTP requests as a Bearer token.
 
 The tests have 100% coverage in the `src` folder using [pytest](https://docs.pytest.org/en/stable/) and [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/). It also uses [factory-boy](https://factoryboy.readthedocs.io/en/stable/) to handle massive creation of models, [freezegun](https://github.com/spulec/freezegun) to test token expiration, and [testcontainers](https://testcontainers.com/guides/getting-started-with-testcontainers-for-python/) to build a PostgreSQL instance during tests.
 
@@ -24,13 +24,15 @@ It is possible to run it locally using Docker Compose, which creates all the tab
 
 ## How it works
 
-Pydantic sanitization
+The API has 4 main routes:
 
-The API has 4 main endopioints:
-- `/auth`
-- `/user`
-- `/book`
-- `/author`
+The `/auth` route is used for user login and generates the access token responsible for authorizing and authenticating some of the CRUD operations. It is also possible to refresh the token, which is set to last 60 minutes by default.
+
+The `/user` route is used to create a user and manage the account. It is possible to delete and update the account, as it verifies if the user has the authorization. 
+
+The `/book` route is responsible for the CRUD operations related to books. To register a book, it requires the `title`, the `year`, and the `author_id`, as it is only possible to register a book with an existing author. For every input, Pydantic coerces the title string by removing trailing spaces, converting all characters to lowercase, and removing duplicate spaces between words to sanitize the inputs in the database. Creating, updating, and deleting books is only possible with authentication.
+
+The `/author` route is responsible for the CRUD operations related to authors. To register an author, it requires just the `name`, and, as in the book route, Pydantic automatically coerces it by removing trailing spaces, converting all characters to lowercase, and removing duplicate spaces between words to sanitize the inputs in the database. Creating, updating, and deleting authors is only possible with authentication.
 
 
 ### Project Folder Structure
@@ -169,7 +171,7 @@ poetry install
 alembic upgrade head
 ```
 
-8 -Run the server:
+8 - Run the server:
 ```bash
 task run
 ```

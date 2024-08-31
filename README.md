@@ -12,7 +12,7 @@ The tests have 100% coverage in the `src` folder using [pytest](https://docs.pyt
 
 It is possible to run it locally using Docker Compose, which creates all the tables in PostgreSQL. A CI routine was also implemented using GitHub Actions.
 
-![Funny GIF](https://private-user-images.githubusercontent.com/123672970/359243033-df915c0a-06d0-4b20-876f-4383cf218c4f.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjQxMDEyNzgsIm5iZiI6MTcyNDEwMDk3OCwicGF0aCI6Ii8xMjM2NzI5NzAvMzU5MjQzMDMzLWRmOTE1YzBhLTA2ZDAtNGIyMC04NzZmLTQzODNjZjIxOGM0Zi5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwODE5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDgxOVQyMDU2MThaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mYWIwMzM1NTM4MDY2MGYyNWI3NzczYzU5YTcwZGUwMjUyNmZkMTVjODIxMWUwMTA4M2JkZDIzYTUyYzBjZDJiJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.Lv-TJLPp4nw_YTpGD_mj3yHkiRWseafb2f0ikUbh2Qc)
+![](media/madr.gif)
 
 
 ## Table of Contents

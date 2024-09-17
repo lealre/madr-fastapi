@@ -17,12 +17,10 @@ It is possible to run it locally using Docker Compose, which creates all the tab
 
 ## Table of Contents
 
-- [Context](#context)
-  - [Contract Schema](#contract-schema)
 - [How it works](#how-it-works)
   - [Project Folder Structure](#project-folder-structure)
 - [How to run this project](#how-to-run-this-project)
-- [Further Improvements](#further-tasks)
+- [Further Improvements](#further-improvements)
 
 
 ## How it works
